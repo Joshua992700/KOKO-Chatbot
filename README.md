@@ -2,7 +2,7 @@
 
 An intelligent conversational AI assistant built with Next.js 14, leveraging advanced language models to provide helpful, context-aware responses.
 
-![KOKO AI Interface](./docs/images/koko-interface.png)
+![KOKO AI Interface](./docs/images/koko-features.png)
 
 ## ✨ Features
 
@@ -14,7 +14,7 @@ An intelligent conversational AI assistant built with Next.js 14, leveraging adv
 - 🎨 **Syntax Highlighting** - Beautiful code formatting with copy feature
 - 📂 **Workspace Organization** - Keep your chats neatly organized
 
-![KOKO AI Features](./docs/images/koko-features.png)
+![KOKO AI Features](./docs/images/koko-interface.png)
 
 ## 🛠️ Tech Stack
 
