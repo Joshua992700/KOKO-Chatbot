@@ -16,14 +16,8 @@ export default function Page() {
     <div className="flex flex-col h-screen bg-white dark:bg-gray-800">
       {/* Header Section */}
       <div className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700">
-        <Header />
-        <button
-          onClick={toggleSidebar}
-          className="fixed top-4 left-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          aria-label="Toggle Sidebar"
-        >
-          <Menu className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-        </button>
+        <Header onMenuClick={toggleSidebar} />
+        {/* Remove the duplicate menu button since it's now handled in Header */}
       </div>
 
       {/* Main Content */}

@@ -1,18 +1,10 @@
-// tailwind.config.mjs
-
-import typography from '@tailwindcss/typography';
-
-/** @type {import('tailwindcss').Config} */
-const config = {
-  content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-  ],
-  theme: {
-    extend: {},
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  env: {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
-  plugins: [typography],
-};
+  // Remove content, theme, and plugins options as they're not valid Next.js config options
+}
 
-export default config;
+export default nextConfig

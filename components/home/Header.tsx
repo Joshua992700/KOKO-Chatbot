@@ -2,7 +2,11 @@ import React from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { Brain, Moon, Sun, Menu } from 'lucide-react';
 
-const Header = () => {
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -25,7 +29,11 @@ const Header = () => {
           )}
         </button>
         
-        <button className="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+        <button 
+          onClick={onMenuClick}
+          className="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          aria-label="Toggle sidebar"
+        >
           <Menu className="h-5 w-5 text-gray-700 dark:text-gray-200" />
         </button>
       </div>

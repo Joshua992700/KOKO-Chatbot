@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Message } from '@/types';
 import { Brain, User } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown'; // Changed import
 import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { TypeAnimation } from 'react-type-animation';
 import CodeBlock from './CodeBlock';
 
@@ -21,15 +19,42 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
   useEffect(() => {
     if (!isUser) {
-      // Show the full content after typing animation
       const timeout = setTimeout(() => {
         setShowFullContent(true);
         setIsTyping(false);
-      }, message.content.length * 20); // Adjust typing speed here
+      }, message.content.length * 20);
 
       return () => clearTimeout(timeout);
     }
   }, [message.content, isUser]);
+
+  const markdownComponents: Components = {
+    p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+    h1: ({ children }) => <h1 className="text-xl font-bold mb-2">{children}</h1>,
+    h2: ({ children }) => <h2 className="text-lg font-bold mb-2">{children}</h2>,
+    h3: ({ children }) => <h3 className="text-base font-bold mb-2">{children}</h3>,
+    ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
+    ol: ({ children }) => <ol className="list-decimal ml-4 mb-2">{children}</ol>,
+    li: ({ children }) => <li className="mb-1">{children}</li>,
+    code: ({ className, children, ...props }) => {
+      const match = /language-(\w+)/.exec(className || '');
+      const language = match ? match[1] : '';
+      const value = String(children).replace(/\n$/, '');
+
+      if (!className) {
+        return (
+          <code
+            className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 font-mono text-sm"
+            {...props}
+          >
+            {children}
+          </code>
+        );
+      }
+
+      return <CodeBlock language={language} value={value} />;
+    },
+  };
 
   return (
     <div
@@ -39,7 +64,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         animate-fadeIn
       `}
     >
-      {/* Avatar */}
       <div
         className={`
           flex-shrink-0 h-8 w-8 
@@ -56,7 +80,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         )}
       </div>
 
-      {/* Message Bubble */}
       <div
         className={`
           py-3 px-4
@@ -75,46 +98,22 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           <div className="markdown-content prose dark:prose-invert max-w-none prose-sm">
             {isTyping ? (
               <TypeAnimation
-                sequence={[message.content]}
+                sequence={[
+                  message.content,
+                  () => {
+                    setShowFullContent(true);
+                    setIsTyping(false);
+                  },
+                ]}
                 cursor={true}
                 speed={65}
                 style={{ whiteSpace: 'pre-line' }}
                 omitDeletionAnimation={true}
-                onComplete={() => {
-                  setShowFullContent(true);
-                  setIsTyping(false);
-                }}
               />
             ) : (
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                components={{
-                  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                  h1: ({ children }) => <h1 className="text-xl font-bold mb-2">{children}</h1>,
-                  h2: ({ children }) => <h2 className="text-lg font-bold mb-2">{children}</h2>,
-                  h3: ({ children }) => <h3 className="text-base font-bold mb-2">{children}</h3>,
-                  ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
-                  ol: ({ children }) => <ol className="list-decimal ml-4 mb-2">{children}</ol>,
-                  li: ({ children }) => <li className="mb-1">{children}</li>,
-                  code({ inline, className, children, ...props }) {
-                    const match = /language-(\w+)/.exec(className || '');
-                    const language = match ? match[1] : '';
-                    const value = String(children).replace(/\n$/, '');
-
-                    if (inline) {
-                      return (
-                        <code
-                          className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 font-mono text-sm"
-                          {...props}
-                        >
-                          {children}
-                        </code>
-                      );
-                    }
-
-                    return <CodeBlock language={language} value={value} />;
-                  },
-                }}
+                components={markdownComponents}
               >
                 {message.content}
               </ReactMarkdown>
